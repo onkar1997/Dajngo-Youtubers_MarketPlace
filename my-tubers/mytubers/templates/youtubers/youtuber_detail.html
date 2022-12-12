@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main class="single-page-tubers">
+    <div class="banner">
+        <img src="{% static './assets/images/bg-banner.png' %}" alt="" class="img-fluid w-100">
+        <h1 class="text-center">
+            YOUTUBER
+        </h1>
+    </div>
+
+    <section class="head container mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                <h1 class="text-center">{{ youtuber.name }}</h1>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                <h1 class="text-accent text-center">
+                    ${{ youtuber.price }}
+                </h1>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                <img src="{{ youtuber.photo.url }}" class="img-fluid" alt="team-member">
+            </div>
+        </div>
+    </section>
+
+    <section class="video container text-center">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ youtuber.video_url }}" title="YouTube video player"
+            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+    </section>
+
+    <section class="descritpion container">
+        <h4>Descritpion</h4>
+        <p class="mt-2 mb-2">
+            {{ youtuber.description | safe }}
+        </p>
+    </section>
+
+    <section class="container w-50">
+        <div class="person-description mt-5">
+            <button class="btn btn-accent"> {{ youtuber.gender }} </button>
+            <button class="btn btn-accent">Age: {{ youtuber.age }} </button>
+            <button class="btn btn-accent">Height: {{ youtuber.height }}cm </button>
+        </div>
+        <div class="person-description mt-2">
+            <button class="btn btn-accent"> Crew: {{ youtuber.crew }}</button>
+            <button class="btn btn-accent"> Camera: {{ youtuber.camera_type }}</button>
+            <button class="btn btn-accent"> Subscriber: {{ youtuber.subscriber_count }}</button>
+        </div>
+    </section>
+
+    {% if user.is_authenticated %}
+    <section class="youtuber-form container mt-5 mb-5">
+        <div class="row">
+            <form method="POST" action="{% url 'hireyoutubers' %}" class="col-md-8 offset-md-2">
+                {% csrf_token %}
+
+                <h3 class="pt-2 pb-3 text-center">Fill the Form and Reach Out</h3>
+
+                {% if user.is_authenticated %}
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                {% else %}
+                <input type="hidden" name="user_id" value="00">
+                {% endif %}
+
+                <input type="hidden" name="youtuber_id" value="{{ youtuber.id }}">
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control" placeholder="First Name" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" name="last_name" value="{{ user.last_name }}"  class="form-control" placeholder="Last Name" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="email" name="email" value="{{ user.email }}" class="form-control" placeholder="Email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="youtuber_name" value="{{ youtuber.name }}" class="form-control" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input type="text" name="city" class="form-control" placeholder="City" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" name="state" class="form-control" placeholder="State" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
+                    </div>
+                </div>
+
+                <div class="form-group pt-2">
+                    <textarea name="message" class="form-control" rows="3" placeholder="Detail Message" required></textarea>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-accent">Contact</button>
+                </div>
+
+            </form>
+        </div>
+
+    </section>
+    {% else %}
+    <section class="youtuber-form container mt-5 mb-5">
+        <div class="row">
+            <form class="col-md-8 offset-md-2">
+    
+                <h3 class="pt-2 text-center">Fill the Form and Reach Out</h3>
+                <h6 class="text-center pb-3">Login to fill out the form</h6>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control"
+                            placeholder="First Name" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control"
+                            placeholder="Last Name" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="email" name="email" value="{{ user.email }}" class="form-control" placeholder="Email" disabled>
+                    </div>
+                </div>
+    
+                <div class="form-group">
+                    <input type="text" name="youtuber_name" value="{{ youtuber.name }}" class="form-control" disabled>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input type="text" name="city" class="form-control" placeholder="City" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" name="state" class="form-control" placeholder="State" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" name="phone" class="form-control" placeholder="Phone Number" disabled>
+                    </div>
+                </div>
+    
+                <div class="form-group pt-2">
+                    <textarea name="message" class="form-control" rows="3" placeholder="Detail Message" disabled></textarea>
+                </div>
+    
+                <div class="text-center">
+                    <button type="submit" class="btn btn-accent" disabled>Contact Us</button>
+                </div>
+    
+            </form>
+        </div>
+    
+    </section>
+    {% endif %}
+</main>
+
+{% endblock %}
